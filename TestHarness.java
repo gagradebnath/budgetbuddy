@@ -20,7 +20,7 @@ public class TestHarness {
         try {
             // Test 1: Load CSV file
             System.out.println("Test 1: Loading CSV file...");
-            CsvLoader loader = new CsvLoader();
+            CsvLoader loader = CsvLoader.getInstance();
             List<Expense> expenses = loader.loadFromFile("data/expenses.csv");
             System.out.println("✓ Loaded " + expenses.size() + " expenses");
             assert expenses.size() == 70 : "Expected 70 expenses";

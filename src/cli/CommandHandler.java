@@ -35,7 +35,7 @@ public class CommandHandler {
      */
     public void handleLoad(String filePath) {
         try {
-            CsvLoader loader = new CsvLoader();
+            CsvLoader loader = CsvLoader.getInstance();
             List<Expense> expenses = loader.loadFromFile(filePath);
 
             mainRepository.clear();

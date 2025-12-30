@@ -1,14 +1,13 @@
 package io;
 
-import model.Expense;
-import util.DateUtils;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import model.Expense;
+import util.DateUtils;
 
 /**
  * Loads expense data from CSV files.
@@ -26,6 +25,20 @@ public class CsvLoader {
      * @throws IOException              if file cannot be read
      * @throws IllegalArgumentException if CSV format is invalid
      */
+
+    private static CsvLoader instance;
+
+    private CsvLoader(){
+
+    }
+
+    public static CsvLoader getInstance(){
+        if(instance==null){
+            instance= new CsvLoader();
+        }
+        return instance;
+    }
+    
     public List<Expense> loadFromFile(String filePath) throws IOException {
         List<Expense> expenses = new ArrayList<>();
 
