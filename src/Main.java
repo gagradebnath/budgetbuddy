@@ -11,7 +11,7 @@ public class Main {
         System.out.println("Starting BudgetBuddy...\n");
 
         // Manually create the main repository
-        ExpenseRepository mainRepository = new ExpenseRepository();
+        ExpenseRepository mainRepository = ExpenseRepository.getInstance();
 
         // Create command handler with the main repository
         CommandHandler commandHandler = new CommandHandler(mainRepository);

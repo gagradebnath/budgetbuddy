@@ -28,7 +28,7 @@ public class TestHarness {
 
             // Test 2: Create repository and add expenses
             System.out.println("Test 2: Creating repository...");
-            ExpenseRepository repository = new ExpenseRepository();
+            ExpenseRepository repository = ExpenseRepository.getInstance();
             repository.addAll(expenses);
             System.out.println("✓ Repository contains " + repository.count() + " expenses");
             assert repository.count() == 70 : "Expected 70 expenses in repository";

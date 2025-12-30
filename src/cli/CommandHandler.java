@@ -3,16 +3,15 @@ package cli;
 import io.CsvLoader;
 import io.HtmlReportWriter;
 import io.TxtReportWriter;
+import java.io.IOException;
+import java.time.YearMonth;
+import java.util.List;
+import java.util.Map;
 import model.Expense;
 import service.ExpenseRepository;
 import service.Summarizer;
 import util.DateUtils;
 import util.TextUtils;
-
-import java.io.IOException;
-import java.time.YearMonth;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Handles CLI commands and dispatches to appropriate services.
@@ -81,7 +80,7 @@ public class CommandHandler {
         try {
             YearMonth yearMonth = DateUtils.parseYearMonth(monthStr);
 
-            ExpenseRepository localRepo = new ExpenseRepository();
+            ExpenseRepository localRepo = ExpenseRepository.getInstance();
             localRepo.addAll(mainRepository.findAll());
 
             List<Expense> monthExpenses = localRepo.findByMonth(yearMonth);
@@ -161,7 +160,7 @@ public class CommandHandler {
         try {
             TxtReportWriter writer = new TxtReportWriter();
 
-            ExpenseRepository exportRepo = new ExpenseRepository();
+            ExpenseRepository exportRepo = ExpenseRepository.getInstance();
             exportRepo.addAll(mainRepository.findAll());
 
             writer.writeReport(outputPath, exportRepo);
@@ -179,7 +178,7 @@ public class CommandHandler {
         try {
             HtmlReportWriter writer = new HtmlReportWriter();
 
-            ExpenseRepository exportRepo = new ExpenseRepository();
+            ExpenseRepository exportRepo = ExpenseRepository.getInstance();
             exportRepo.addAll(mainRepository.findAll());
 
             writer.writeReport(outputPath, exportRepo);

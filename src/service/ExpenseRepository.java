@@ -1,24 +1,31 @@
 package service;
 
-import model.Expense;
-
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import model.Expense;
 
 /**
  * In-memory repository for expense data.
  */
 public class ExpenseRepository {
     private final List<Expense> expenses;
+    private static ExpenseRepository instance;
 
     /**
      * Creates a new empty repository.
      */
-    public ExpenseRepository() {
+    private ExpenseRepository() {
         this.expenses = new ArrayList<>();
         System.out.println("Created new ExpenseRepository instance");
+    }
+
+    public static ExpenseRepository getInstance(){
+        if(instance == null){
+            instance = new ExpenseRepository();
+        }
+        return instance;
     }
 
     /**
