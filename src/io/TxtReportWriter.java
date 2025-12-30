@@ -1,31 +1,21 @@
 package io;
 
-import model.Expense;
-import service.ExpenseRepository;
-import service.Summarizer;
-import util.TextUtils;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import model.Expense;
+import service.ExpenseRepository;
+import service.Summarizer;
+import util.TextUtils;
 
 /**
  * Writes plain-text expense reports with ASCII formatting.
  */
-public class TxtReportWriter {
-    private final DateTimeFormatter dateFormatter;
-    private final DateTimeFormatter monthFormatter;
-
-    public TxtReportWriter() {
-        this.dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        this.monthFormatter = DateTimeFormatter.ofPattern("yyyy-MM");
-    }
-
+public class TxtReportWriter extends ReportWriter{
     public void writeReport(String filePath, ExpenseRepository repository) throws IOException {
         List<Expense> allExpenses = repository.findAll();
         Summarizer summarizer = new Summarizer(allExpenses);
@@ -41,13 +31,13 @@ public class TxtReportWriter {
         System.out.println("Text report written to: " + filePath);
     }
 
-    private void writeHeader(BufferedWriter writer) throws IOException {
+    protected void writeHeader(BufferedWriter writer) throws IOException {
         writer.write("=====================================\n");
         writer.write("       BUDGETBUDDY EXPENSE REPORT    \n");
         writer.write("=====================================\n\n");
     }
 
-    private void writeMonthlySummary(BufferedWriter writer, Summarizer summarizer) throws IOException {
+    protected void writeMonthlySummary(BufferedWriter writer, Summarizer summarizer) throws IOException {
         writer.write("MONTHLY SUMMARY\n");
         writer.write(TextUtils.separator(60) + "\n");
 
@@ -60,7 +50,7 @@ public class TxtReportWriter {
         writer.write("\n");
     }
 
-    private void writeCategoryBreakdown(BufferedWriter writer, Summarizer summarizer) throws IOException {
+    protected void writeCategoryBreakdown(BufferedWriter writer, Summarizer summarizer) throws IOException {
         writer.write("CATEGORY BREAKDOWN (All Time)\n");
         writer.write(TextUtils.separator(60) + "\n");
 
@@ -79,13 +69,13 @@ public class TxtReportWriter {
         writer.write("\n");
     }
 
-    private void writeGrandTotal(BufferedWriter writer, Summarizer summarizer) throws IOException {
+    protected void writeGrandTotal(BufferedWriter writer, Summarizer summarizer) throws IOException {
         writer.write(TextUtils.separator(60) + "\n");
         writer.write(String.format("GRAND TOTAL: %s\n", formatAmount(summarizer.grandTotal())));
         writer.write(TextUtils.separator(60) + "\n");
     }
 
-    private void writeRecentEntries(BufferedWriter writer, List<Expense> expenses) throws IOException {
+    protected void writeRecentEntries(BufferedWriter writer, List<Expense> expenses) throws IOException {
         writer.write("\nRECENT ENTRIES (Last 10)\n");
         writer.write(TextUtils.separator(60) + "\n");
 
@@ -100,20 +90,24 @@ public class TxtReportWriter {
                     exp.getNotes()));
         }
     }
+    
+    protected void writeFooter(BufferedWriter writer) throws IOException{
 
-    private String formatDate(LocalDate date) {
+    }
+
+    protected String formatDate(LocalDate date) {
         return date.format(dateFormatter);
     }
 
-    private String formatMonth(YearMonth month) {
+    protected String formatMonth(YearMonth month) {
         return month.format(monthFormatter);
     }
 
-    private String formatAmount(double amount) {
+    protected String formatAmount(double amount) {
         return String.format("%.2f", amount);
     }
 
-    private String createBar(double value, double maxValue) {
+    protected String createBar(double value, double maxValue) {
         return TextUtils.createBar(value, maxValue, 30);
     }
 }

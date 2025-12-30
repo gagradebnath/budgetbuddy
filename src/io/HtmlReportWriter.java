@@ -1,47 +1,39 @@
 package io;
 
-import model.Expense;
-import service.ExpenseRepository;
-import service.Summarizer;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import model.Expense;
+import service.ExpenseRepository;
+import service.Summarizer;
 
 /**
  * Writes HTML expense reports with basic inline styling.
  */
-public class HtmlReportWriter {
-    private final DateTimeFormatter dateFormatter;
-    private final DateTimeFormatter monthFormatter;
+public class HtmlReportWriter extends ReportWriter{
 
-    public HtmlReportWriter() {
-        this.dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        this.monthFormatter = DateTimeFormatter.ofPattern("yyyy-MM");
-    }
 
     public void writeReport(String filePath, ExpenseRepository repository) throws IOException {
         List<Expense> allExpenses = repository.findAll();
         Summarizer summarizer = new Summarizer(allExpenses);
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
-            writeHtmlHeader(writer);
+            writeHeader(writer);
             writeMonthlySummary(writer, summarizer);
             writeCategoryBreakdown(writer, summarizer);
             writeGrandTotal(writer, summarizer);
             writeRecentEntries(writer, allExpenses);
-            writeHtmlFooter(writer);
+            writeFooter(writer);
         }
 
         System.out.println("HTML report written to: " + filePath);
     }
 
-    private void writeHtmlHeader(BufferedWriter writer) throws IOException {
+    protected void writeHeader(BufferedWriter writer) throws IOException {
         writer.write("<!DOCTYPE html>\n");
         writer.write("<html>\n<head>\n");
         writer.write("<title>BudgetBuddy Expense Report</title>\n");
@@ -58,7 +50,7 @@ public class HtmlReportWriter {
         writer.write("<h1>BudgetBuddy Expense Report</h1>\n");
     }
 
-    private void writeMonthlySummary(BufferedWriter writer, Summarizer summarizer) throws IOException {
+    protected void writeMonthlySummary(BufferedWriter writer, Summarizer summarizer) throws IOException {
         writer.write("<h2>Monthly Summary</h2>\n");
         writer.write("<table>\n");
         writer.write("<tr><th>Month</th><th>Total Amount</th></tr>\n");
@@ -72,7 +64,7 @@ public class HtmlReportWriter {
         writer.write("</table>\n");
     }
 
-    private void writeCategoryBreakdown(BufferedWriter writer, Summarizer summarizer) throws IOException {
+    protected void writeCategoryBreakdown(BufferedWriter writer, Summarizer summarizer) throws IOException {
         writer.write("<h2>Category Breakdown (All Time)</h2>\n");
         writer.write("<table>\n");
         writer.write("<tr><th>Category</th><th>Total Amount</th><th>Visual</th></tr>\n");
@@ -86,19 +78,19 @@ public class HtmlReportWriter {
             String category = entry.getKey();
             double amount = entry.getValue();
             String amountStr = formatAmount(amount);
-            String barHtml = createBarHtml(amount, maxAmount);
+            String barHtml = createBar(amount, maxAmount);
             writer.write(String.format("<tr><td>%s</td><td>%s</td><td>%s</td></tr>\n",
                     category, amountStr, barHtml));
         }
         writer.write("</table>\n");
     }
 
-    private void writeGrandTotal(BufferedWriter writer, Summarizer summarizer) throws IOException {
+    protected void writeGrandTotal(BufferedWriter writer, Summarizer summarizer) throws IOException {
         writer.write(String.format("<p class=\"total\">Grand Total: %s</p>\n",
                 formatAmount(summarizer.grandTotal())));
     }
 
-    private void writeRecentEntries(BufferedWriter writer, List<Expense> expenses) throws IOException {
+    protected void writeRecentEntries(BufferedWriter writer, List<Expense> expenses) throws IOException {
         writer.write("<h2>Recent Entries (Last 10)</h2>\n");
         writer.write("<table>\n");
         writer.write("<tr><th>Date</th><th>Category</th><th>Amount</th><th>Notes</th></tr>\n");
@@ -116,23 +108,24 @@ public class HtmlReportWriter {
         writer.write("</table>\n");
     }
 
-    private void writeHtmlFooter(BufferedWriter writer) throws IOException {
+    protected void writeFooter(BufferedWriter writer) throws IOException {
         writer.write("</body>\n</html>\n");
     }
 
-    private String formatDate(LocalDate date) {
+    protected String formatDate(LocalDate date) {
         return date.format(dateFormatter);
     }
 
-    private String formatMonth(YearMonth month) {
+    protected String formatMonth(YearMonth month) {
         return month.format(monthFormatter);
     }
 
-    private String formatAmount(double amount) {
+    @Override
+    protected String formatAmount(double amount) {
         return String.format("%.2f", amount);
     }
 
-    private String createBarHtml(double value, double maxValue) {
+    protected String createBar(double value, double maxValue) {
         int barWidth = (int) Math.round((value * 200) / maxValue);
         return String.format("<div class=\"bar\" style=\"width: %dpx;\"></div>", barWidth);
     }
