@@ -16,6 +16,7 @@ import util.TextUtils;
  * Writes plain-text expense reports with ASCII formatting.
  */
 public class TxtReportWriter extends ReportWriter{
+    @Override
     public void writeReport(String filePath, ExpenseRepository repository) throws IOException {
         List<Expense> allExpenses = repository.findAll();
         Summarizer summarizer = new Summarizer(allExpenses);
@@ -31,12 +32,14 @@ public class TxtReportWriter extends ReportWriter{
         System.out.println("Text report written to: " + filePath);
     }
 
+    @Override
     protected void writeHeader(BufferedWriter writer) throws IOException {
         writer.write("=====================================\n");
         writer.write("       BUDGETBUDDY EXPENSE REPORT    \n");
         writer.write("=====================================\n\n");
     }
 
+    @Override
     protected void writeMonthlySummary(BufferedWriter writer, Summarizer summarizer) throws IOException {
         writer.write("MONTHLY SUMMARY\n");
         writer.write(TextUtils.separator(60) + "\n");
@@ -50,6 +53,7 @@ public class TxtReportWriter extends ReportWriter{
         writer.write("\n");
     }
 
+    @Override
     protected void writeCategoryBreakdown(BufferedWriter writer, Summarizer summarizer) throws IOException {
         writer.write("CATEGORY BREAKDOWN (All Time)\n");
         writer.write(TextUtils.separator(60) + "\n");
@@ -69,12 +73,14 @@ public class TxtReportWriter extends ReportWriter{
         writer.write("\n");
     }
 
+    @Override
     protected void writeGrandTotal(BufferedWriter writer, Summarizer summarizer) throws IOException {
         writer.write(TextUtils.separator(60) + "\n");
         writer.write(String.format("GRAND TOTAL: %s\n", formatAmount(summarizer.grandTotal())));
         writer.write(TextUtils.separator(60) + "\n");
     }
 
+    @Override
     protected void writeRecentEntries(BufferedWriter writer, List<Expense> expenses) throws IOException {
         writer.write("\nRECENT ENTRIES (Last 10)\n");
         writer.write(TextUtils.separator(60) + "\n");
@@ -90,23 +96,23 @@ public class TxtReportWriter extends ReportWriter{
                     exp.getNotes()));
         }
     }
-    
-    protected void writeFooter(BufferedWriter writer) throws IOException{
 
-    }
-
+    @Override
     protected String formatDate(LocalDate date) {
         return date.format(dateFormatter);
     }
 
+    @Override
     protected String formatMonth(YearMonth month) {
         return month.format(monthFormatter);
     }
 
+    @Override
     protected String formatAmount(double amount) {
         return String.format("%.2f", amount);
     }
 
+    @Override
     protected String createBar(double value, double maxValue) {
         return TextUtils.createBar(value, maxValue, 30);
     }

@@ -17,6 +17,7 @@ import service.Summarizer;
 public class HtmlReportWriter extends ReportWriter{
 
 
+    @Override
     public void writeReport(String filePath, ExpenseRepository repository) throws IOException {
         List<Expense> allExpenses = repository.findAll();
         Summarizer summarizer = new Summarizer(allExpenses);
@@ -33,6 +34,7 @@ public class HtmlReportWriter extends ReportWriter{
         System.out.println("HTML report written to: " + filePath);
     }
 
+    @Override
     protected void writeHeader(BufferedWriter writer) throws IOException {
         writer.write("<!DOCTYPE html>\n");
         writer.write("<html>\n<head>\n");
@@ -50,6 +52,7 @@ public class HtmlReportWriter extends ReportWriter{
         writer.write("<h1>BudgetBuddy Expense Report</h1>\n");
     }
 
+    @Override
     protected void writeMonthlySummary(BufferedWriter writer, Summarizer summarizer) throws IOException {
         writer.write("<h2>Monthly Summary</h2>\n");
         writer.write("<table>\n");
@@ -64,6 +67,7 @@ public class HtmlReportWriter extends ReportWriter{
         writer.write("</table>\n");
     }
 
+    @Override
     protected void writeCategoryBreakdown(BufferedWriter writer, Summarizer summarizer) throws IOException {
         writer.write("<h2>Category Breakdown (All Time)</h2>\n");
         writer.write("<table>\n");
@@ -85,11 +89,13 @@ public class HtmlReportWriter extends ReportWriter{
         writer.write("</table>\n");
     }
 
+    @Override
     protected void writeGrandTotal(BufferedWriter writer, Summarizer summarizer) throws IOException {
         writer.write(String.format("<p class=\"total\">Grand Total: %s</p>\n",
                 formatAmount(summarizer.grandTotal())));
     }
 
+    @Override
     protected void writeRecentEntries(BufferedWriter writer, List<Expense> expenses) throws IOException {
         writer.write("<h2>Recent Entries (Last 10)</h2>\n");
         writer.write("<table>\n");
@@ -108,14 +114,17 @@ public class HtmlReportWriter extends ReportWriter{
         writer.write("</table>\n");
     }
 
+    @Override
     protected void writeFooter(BufferedWriter writer) throws IOException {
         writer.write("</body>\n</html>\n");
     }
 
+    @Override
     protected String formatDate(LocalDate date) {
         return date.format(dateFormatter);
     }
 
+    @Override
     protected String formatMonth(YearMonth month) {
         return month.format(monthFormatter);
     }
@@ -125,6 +134,7 @@ public class HtmlReportWriter extends ReportWriter{
         return String.format("%.2f", amount);
     }
 
+    @Override
     protected String createBar(double value, double maxValue) {
         int barWidth = (int) Math.round((value * 200) / maxValue);
         return String.format("<div class=\"bar\" style=\"width: %dpx;\"></div>", barWidth);

@@ -1,17 +1,14 @@
 package io;
 
-import model.Expense;
-import service.ExpenseRepository;
-import service.Summarizer;
-
 import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Map;
+import model.Expense;
+import service.ExpenseRepository;
+import service.Summarizer;
 
 
 public abstract  class ReportWriter {
@@ -35,7 +32,9 @@ public abstract  class ReportWriter {
 
     protected abstract void writeRecentEntries(BufferedWriter writer, List<Expense> expenses) throws IOException;
 
-    protected abstract void writeFooter(BufferedWriter writer) throws IOException;
+    protected void writeFooter(BufferedWriter writer) throws IOException{
+        
+    }
 
     protected String formatDate(LocalDate date) {
         return date.format(dateFormatter);
