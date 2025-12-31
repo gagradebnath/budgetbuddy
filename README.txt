@@ -9,7 +9,7 @@ COMPILATION
 
 From the project root directory, compile all Java files:
 
-    javac -d out src/**/*.java
+    dir /s /b *.java > sources.txt && javac -d out @sources.txt
 
 Note: On Windows, you may need to compile packages individually or use:
     javac -d out src/model/*.java src/util/*.java src/io/*.java src/service/*.java src/cli/*.java src/Main.java
