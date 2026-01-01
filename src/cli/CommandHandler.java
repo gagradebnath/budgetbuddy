@@ -1,9 +1,9 @@
 package cli;
 
 import io.CsvLoader;
-import io.HtmlReportWriter;
-import io.ReportWriter;
-import io.TxtReportWriter;
+import report.HtmlReportWriter;
+import report.ReportWriter;
+import report.TxtReportWriter;
 import java.io.IOException;
 import java.time.YearMonth;
 import java.util.List;
