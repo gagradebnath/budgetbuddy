@@ -3,7 +3,6 @@ package report;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.Map;
@@ -119,21 +118,7 @@ public class HtmlReportWriter extends ReportWriter{
         writer.write("</body>\n</html>\n");
     }
 
-    @Override
-    protected String formatDate(LocalDate date) {
-        return date.format(dateFormatter);
-    }
-
-    @Override
-    protected String formatMonth(YearMonth month) {
-        return month.format(monthFormatter);
-    }
-
-    @Override
-    protected String formatAmount(double amount) {
-        return String.format("%.2f", amount);
-    }
-
+    
     @Override
     protected String createBar(double value, double maxValue) {
         int barWidth = (int) Math.round((value * 200) / maxValue);

@@ -3,7 +3,6 @@ package report;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.Map;
@@ -95,21 +94,6 @@ public class TxtReportWriter extends ReportWriter{
                     formatAmount(exp.getAmount()),
                     exp.getNotes()));
         }
-    }
-
-    @Override
-    protected String formatDate(LocalDate date) {
-        return date.format(dateFormatter);
-    }
-
-    @Override
-    protected String formatMonth(YearMonth month) {
-        return month.format(monthFormatter);
-    }
-
-    @Override
-    protected String formatAmount(double amount) {
-        return String.format("%.2f", amount);
     }
 
     @Override
