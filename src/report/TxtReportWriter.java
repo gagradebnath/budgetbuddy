@@ -1,7 +1,5 @@
 package report;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.time.YearMonth;
 import java.util.List;
@@ -20,42 +18,42 @@ public class TxtReportWriter extends ReportWriter{
         List<Expense> allExpenses = repository.findAll();
         Summarizer summarizer = new Summarizer(allExpenses);
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
-            writeHeader(writer);
-            writeMonthlySummary(writer, summarizer);
-            writeCategoryBreakdown(writer, summarizer);
-            writeGrandTotal(writer, summarizer);
-            writeRecentEntries(writer, allExpenses);
-        }
+       
+            writeHeader(exportReport);
+            writeMonthlySummary(exportReport, summarizer);
+            writeCategoryBreakdown(exportReport, summarizer);
+            writeGrandTotal(exportReport, summarizer);
+            writeRecentEntries(exportReport, allExpenses);
+        
 
         System.out.println("Text report written to: " + filePath);
     }
 
     @Override
-    protected void writeHeader(BufferedWriter writer) throws IOException {
-        writer.write("=====================================\n");
-        writer.write("       BUDGETBUDDY EXPENSE REPORT    \n");
-        writer.write("=====================================\n\n");
+    protected void writeHeader(ExportReport exportReport) throws IOException {
+        exportReport.add("=====================================\n");
+        exportReport.add("       BUDGETBUDDY EXPENSE REPORT    \n");
+        exportReport.add("=====================================\n\n");
     }
 
     @Override
-    protected void writeMonthlySummary(BufferedWriter writer, Summarizer summarizer) throws IOException {
-        writer.write("MONTHLY SUMMARY\n");
-        writer.write(TextUtils.separator(60) + "\n");
+    protected void writeMonthlySummary(ExportReport exportReport, Summarizer summarizer) throws IOException {
+        exportReport.add("MONTHLY SUMMARY\n");
+        exportReport.add(TextUtils.separator(60) + "\n");
 
         Map<YearMonth, Double> monthlyTotals = summarizer.monthlyTotals();
         for (Map.Entry<YearMonth, Double> entry : monthlyTotals.entrySet()) {
             String monthStr = formatMonth(entry.getKey());
             String amountStr = formatAmount(entry.getValue());
-            writer.write(String.format("%-10s : %12s\n", monthStr, amountStr));
+            exportReport.add(String.format("%-10s : %12s\n", monthStr, amountStr));
         }
-        writer.write("\n");
+        exportReport.add("\n");
     }
 
     @Override
-    protected void writeCategoryBreakdown(BufferedWriter writer, Summarizer summarizer) throws IOException {
-        writer.write("CATEGORY BREAKDOWN (All Time)\n");
-        writer.write(TextUtils.separator(60) + "\n");
+    protected void writeCategoryBreakdown(ExportReport exportReport, Summarizer summarizer) throws IOException {
+        exportReport.add("CATEGORY BREAKDOWN (All Time)\n");
+        exportReport.add(TextUtils.separator(60) + "\n");
 
         Map<String, Double> categoryTotals = summarizer.categoryTotals(null);
         double maxAmount = categoryTotals.values().stream()
@@ -67,28 +65,28 @@ public class TxtReportWriter extends ReportWriter{
             double amount = entry.getValue();
             String amountStr = formatAmount(amount);
             String bar = createBar(amount, maxAmount);
-            writer.write(String.format("%-15s %12s  %s\n", category, amountStr, bar));
+            exportReport.add(String.format("%-15s %12s  %s\n", category, amountStr, bar));
         }
-        writer.write("\n");
+        exportReport.add("\n");
     }
 
     @Override
-    protected void writeGrandTotal(BufferedWriter writer, Summarizer summarizer) throws IOException {
-        writer.write(TextUtils.separator(60) + "\n");
-        writer.write(String.format("GRAND TOTAL: %s\n", formatAmount(summarizer.grandTotal())));
-        writer.write(TextUtils.separator(60) + "\n");
+    protected void writeGrandTotal(ExportReport exportReport, Summarizer summarizer) throws IOException {
+        exportReport.add(TextUtils.separator(60) + "\n");
+        exportReport.add(String.format("GRAND TOTAL: %s\n", formatAmount(summarizer.grandTotal())));
+        exportReport.add(TextUtils.separator(60) + "\n");
     }
 
     @Override
-    protected void writeRecentEntries(BufferedWriter writer, List<Expense> expenses) throws IOException {
-        writer.write("\nRECENT ENTRIES (Last 10)\n");
-        writer.write(TextUtils.separator(60) + "\n");
+    protected void writeRecentEntries(ExportReport exportReport, List<Expense> expenses) throws IOException {
+        exportReport.add("\nRECENT ENTRIES (Last 10)\n");
+        exportReport.add(TextUtils.separator(60) + "\n");
 
         int count = 0;
         for (int i = expenses.size() - 1; i >= 0 && count < 10; i--, count++) {
             Expense exp = expenses.get(i);
             String dateStr = formatDate(exp.getDate());
-            writer.write(String.format("%s  %-12s %10s  %s\n",
+            exportReport.add(String.format("%s  %-12s %10s  %s\n",
                     dateStr,
                     exp.getCategory(),
                     formatAmount(exp.getAmount()),

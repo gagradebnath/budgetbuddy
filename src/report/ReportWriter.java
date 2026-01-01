@@ -1,6 +1,5 @@
 package report;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -14,25 +13,26 @@ import service.Summarizer;
 public abstract  class ReportWriter {
     protected final DateTimeFormatter dateFormatter;
     protected final DateTimeFormatter monthFormatter;
-
+    protected ExportReport exportReport;
     public ReportWriter() {
         this.dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         this.monthFormatter = DateTimeFormatter.ofPattern("yyyy-MM");
+        this.exportReport = new ExportReport();
     }
 
     public abstract void writeReport(String filePath, ExpenseRepository repository) throws IOException;
 
-    protected abstract void writeHeader(BufferedWriter writer) throws IOException;
+    protected abstract void writeHeader(ExportReport exportReport) throws IOException;
 
-    protected abstract void writeMonthlySummary(BufferedWriter writer, Summarizer summarizer) throws IOException;
+    protected abstract void writeMonthlySummary(ExportReport exportReport, Summarizer summarizer) throws IOException;
 
-    protected abstract void writeCategoryBreakdown(BufferedWriter writer, Summarizer summarizer) throws IOException;
+    protected abstract void writeCategoryBreakdown(ExportReport exportReport, Summarizer summarizer) throws IOException;
 
-    protected abstract void writeGrandTotal(BufferedWriter writer, Summarizer summarizer) throws IOException;
+    protected abstract void writeGrandTotal(ExportReport exportReport, Summarizer summarizer) throws IOException;
 
-    protected abstract void writeRecentEntries(BufferedWriter writer, List<Expense> expenses) throws IOException;
+    protected abstract void writeRecentEntries(ExportReport exportReport, List<Expense> expenses) throws IOException;
 
-    protected void writeFooter(BufferedWriter writer) throws IOException{
+    protected void writeFooter(ExportReport exportReport) throws IOException{
         
     }
 
