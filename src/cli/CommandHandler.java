@@ -6,9 +6,8 @@ import java.time.YearMonth;
 import java.util.List;
 import java.util.Map;
 import model.Expense;
-import report.HtmlReportWriter;
 import report.ReportWriter;
-import report.TxtReportWriter;
+import report.ReportWriterFactory;
 import service.ExpenseRepository;
 import service.Summarizer;
 import util.DateUtils;
@@ -81,10 +80,7 @@ public class CommandHandler {
         try {
             YearMonth yearMonth = DateUtils.parseYearMonth(monthStr);
 
-            ExpenseRepository localRepo = ExpenseRepository.getInstance();
-            localRepo.addAll(mainRepository.findAll());
-
-            List<Expense> monthExpenses = localRepo.findByMonth(yearMonth);
+            List<Expense> monthExpenses = mainRepository.findByMonth(yearMonth);
             Summarizer summarizer = new Summarizer(monthExpenses);
 
             System.out.println("\nMonth: " + monthStr);
@@ -159,12 +155,9 @@ public class CommandHandler {
      */
     public void handleExportTxt(String outputPath) {
         try {
-            ReportWriter writer = new TxtReportWriter();
+            ReportWriter writer = ReportWriterFactory.createReportWriter("txt");
 
-            ExpenseRepository exportRepo = ExpenseRepository.getInstance();
-            exportRepo.addAll(mainRepository.findAll());
-
-            writer.writeReport(outputPath, exportRepo);
+            writer.writeReport(outputPath, mainRepository);
         } catch (IOException e) {
             System.err.println("Error writing report: " + e.getMessage());
         }
@@ -177,24 +170,22 @@ public class CommandHandler {
      */
     public void handleExportHtml(String outputPath) {
         try {
-            ReportWriter writer = new HtmlReportWriter();
+            ReportWriter writer = ReportWriterFactory.createReportWriter("html");
 
-            ExpenseRepository exportRepo = ExpenseRepository.getInstance();
-            exportRepo.addAll(mainRepository.findAll());
-
-            writer.writeReport(outputPath, exportRepo);
+            writer.writeReport(outputPath, mainRepository);
         } catch (IOException e) {
             System.err.println("Error writing report: " + e.getMessage());
         }
     }
 
     public void handleExport(String format, String outputPath) {
-        if (format.equalsIgnoreCase("txt")) {
-            handleExportTxt(outputPath);
-        } else if (format.equalsIgnoreCase("html")) {
-            handleExportHtml(outputPath);
-        } else {
-            System.err.println("Unsupported export format: " + format);
+        try {
+            ReportWriter writer = ReportWriterFactory.createReportWriter(format);
+            writer.writeReport(outputPath, mainRepository);
+        } catch (IllegalArgumentException e) {
+            System.err.println("Error: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("Error writing report: " + e.getMessage());
         }
     }
     
