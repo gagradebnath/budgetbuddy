@@ -1,14 +1,14 @@
 package cli;
 
 import io.CsvLoader;
-import report.HtmlReportWriter;
-import report.ReportWriter;
-import report.TxtReportWriter;
 import java.io.IOException;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.Map;
 import model.Expense;
+import report.HtmlReportWriter;
+import report.ReportWriter;
+import report.TxtReportWriter;
 import service.ExpenseRepository;
 import service.Summarizer;
 import util.DateUtils;
@@ -188,6 +188,16 @@ public class CommandHandler {
         }
     }
 
+    public void handleExport(String format, String outputPath) {
+        if (format.equalsIgnoreCase("txt")) {
+            handleExportTxt(outputPath);
+        } else if (format.equalsIgnoreCase("html")) {
+            handleExportHtml(outputPath);
+        } else {
+            System.err.println("Unsupported export format: " + format);
+        }
+    }
+    
     /**
      * Shows help information.
      */

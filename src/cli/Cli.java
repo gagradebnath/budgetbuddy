@@ -93,13 +93,7 @@ public class Cli {
                     String exportType = parts[1].toLowerCase();
                     String outputPath = parts[2];
                     
-                    if (exportType.equals("txt")) {
-                        commandHandler.handleExportTxt(outputPath);
-                    } else if (exportType.equals("html")) {
-                        commandHandler.handleExportHtml(outputPath);
-                    } else {
-                        System.err.println("Unknown export type: " + exportType);
-                    }
+                    commandHandler.handleExport(exportType, outputPath);
                     break;
 
                 case "help":
