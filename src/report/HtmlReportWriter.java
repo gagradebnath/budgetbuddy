@@ -26,8 +26,12 @@ public class HtmlReportWriter extends ReportWriter{
             writeRecentEntries(exportReport, allExpenses);
             writeFooter(exportReport);
         
-        if(exportReport.saveReport(filePath)  ){ 
-        System.out.println("HTML report written to: " + filePath);
+        try {
+            if(exportReport.saveReport(filePath)  ){
+                System.out.println("HTML report written to: " + filePath);
+            }
+        } catch (Exception ex) {
+            System.getLogger(HtmlReportWriter.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
     }
 

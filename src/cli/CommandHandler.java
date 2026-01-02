@@ -153,30 +153,30 @@ public class CommandHandler {
      *
      * @param outputPath the output file path
      */
-    public void handleExportTxt(String outputPath) {
-        try {
-            ReportWriter writer = ReportWriterFactory.createReportWriter("txt");
+    // public void handleExportTxt(String outputPath) {
+    //     try {
+    //         ReportWriter writer = ReportWriterFactory.createReportWriter("txt");
 
-            writer.writeReport(outputPath, mainRepository);
-        } catch (IOException e) {
-            System.err.println("Error writing report: " + e.getMessage());
-        }
-    }
+    //         writer.writeReport(outputPath, mainRepository);
+    //     } catch (IOException e) {
+    //         System.err.println("Error writing report: " + e.getMessage());
+    //     }
+    // }
 
     /**
      * Exports an HTML report.
      *
      * @param outputPath the output file path
      */
-    public void handleExportHtml(String outputPath) {
-        try {
-            ReportWriter writer = ReportWriterFactory.createReportWriter("html");
+    // public void handleExportHtml(String outputPath) {
+    //     try {
+    //         ReportWriter writer = ReportWriterFactory.createReportWriter("html");
 
-            writer.writeReport(outputPath, mainRepository);
-        } catch (IOException e) {
-            System.err.println("Error writing report: " + e.getMessage());
-        }
-    }
+    //         writer.writeReport(outputPath, mainRepository);
+    //     } catch (IOException e) {
+    //         System.err.println("Error writing report: " + e.getMessage());
+    //     }
+    // }
 
     public void handleExport(String format, String outputPath) {
         try {

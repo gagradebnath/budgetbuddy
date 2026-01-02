@@ -25,8 +25,13 @@ public class TxtReportWriter extends ReportWriter{
             writeGrandTotal(exportReport, summarizer);
             writeRecentEntries(exportReport, allExpenses);
         
-
-        System.out.println("Text report written to: " + filePath);
+        try {
+            if(exportReport.saveReport(filePath)  ){
+                System.out.println("Text report written to: " + filePath);
+            }
+        } catch (Exception ex) {
+            System.getLogger(TxtReportWriter.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
     }
 
     @Override
